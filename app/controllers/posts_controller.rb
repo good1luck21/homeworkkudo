@@ -15,6 +15,13 @@ class PostsController < ApplicationController
     puts @created_at
   end
 
+  def search
+    @posts = Post.where('title LIKE(?)', "%#{params[:keyword]}%")
+    respond_to do |format|
+      format.json { render json: @posts }
+    end
+  end
+
   def create
     @post = Post.new(post_params)
     if @post.save

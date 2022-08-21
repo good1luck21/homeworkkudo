@@ -1,7 +1,37 @@
 <h1>Posts#index</h1>
 <p>Find me in app/views/posts/index.html.erb</p>
-<% @posts.each do |post| %>
-  <div>
-    <h3><%= link_to post.title, show_post_path(post) %></h3>
-  </div>
-<% end %>
+<input type="text" name="search" id="search">
+<button onclick="search()">検索</button>
+<div id="post-content">
+  <% @posts.each do |post| %>
+    <div>
+      <h3><%= link_to post.title, show_post_path(post) %></h3>
+    </div>
+  <% end %>
+</div>
+
+<script>
+function search() {
+  const keyword = document.getElementById('search').value;
+  const url = '/posts/search?keyword=' + keyword;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      const postContent = document.getElementById('post-content');
+      postContent.innerHTML = '';
+      data.forEach(post => {
+        const div = document.createElement('div');
+        div.className = 'post';
+        const h3 = document.createElement('h3');
+        const a = document.createElement('a');
+        a.href = '/posts/' + post.id;
+        a.innerText = post.title;
+        h3.appendChild(a);
+        div.appendChild(h3);
+        postContent.appendChild(div);
+      });
+    }).catch((error) => {
+      console.log(error);
+    });
+}
+</script>
